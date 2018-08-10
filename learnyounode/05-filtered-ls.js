@@ -14,6 +14,15 @@ fs.readdir(folder, (err, files) => {
     })
 })
 
+
+
+
+
+
+
+
+
+
 /*
 // Official solution
 var fs = require('fs')

@@ -4,6 +4,14 @@ var contents    = fs.readFileSync(process.argv[2],'utf8');
 var lines       = contents.split('\n').length - 1;
 console.log(lines);
 
+
+
+
+
+
+
+
+
 /*
 // Initial solution
 console.log(fs.readFileSync(process.argv[2],'utf8').split('\n').length - 1 );
