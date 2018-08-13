@@ -2,15 +2,17 @@ const http = require('http');
 const bl = require('bl');
 
 const urls = [process.argv[2], process.argv[3], process.argv[4]];
-
 const result = [];
+let count = 0;
 
 for (let i = 0; i < urls.length; i++) {
 
   http.get(urls[i], function (response) {
     response.pipe(bl(function (err, data) {
       result[i] = data.toString();
-      if (result[0] != undefined && result[1] != undefined && result[2] != undefined ){
+      count++;
+
+      if (count === 3){
         for (let j = 0; j < result.length; j++) {
           console.log(result[j]);
         }
@@ -54,5 +56,31 @@ function httpGet (index) {
 
 for (var i = 0; i < 3; i++) {
   httpGet(i)
+}
+*/
+
+
+
+/*
+// Initial approach
+const http = require('http');
+const bl = require('bl');
+
+const urls = [process.argv[2], process.argv[3], process.argv[4]];
+const result = [];
+
+for (let i = 0; i < urls.length; i++) {
+
+  http.get(urls[i], function (response) {
+    response.pipe(bl(function (err, data) {
+      result[i] = data.toString();
+      if (result[0] != undefined && result[1] != undefined && result[2] != undefined ){
+        for (let j = 0; j < result.length; j++) {
+          console.log(result[j]);
+        }
+      }
+
+    }))
+  });
 }
 */
