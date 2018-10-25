@@ -1,3 +1,16 @@
+function reducer(arr, fn, initial) {
+
+    return ( function reduceOne(index, value){
+        if(index > arr.length - 1) return value;
+        return  reduceOne(index + 1, fn( value, arr[index], index, arr ) ) 
+    })(0,initial);
+
+}
+
+module.exports = reducer;
+
+
+/*
 function reduce(arr, fn, initial) {
 
     return arr.reduce( fn, initial );
@@ -5,6 +18,7 @@ function reduce(arr, fn, initial) {
 }
 
 module.exports = reduce;
+*/
 
 
 
