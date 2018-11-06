@@ -4,6 +4,8 @@ module.exports = function getDependencies(tree) {
   // to this function for use with recursive calls.
   // Or not! There are many ways to recurse.
   //console.log(tree);
+
+  /*
   if (typeof tree['dependencies'] != 'undefined' ){
     return getDependencies(tree['dependencies']);
   }
@@ -11,8 +13,27 @@ module.exports = function getDependencies(tree) {
   return result.concat( Object.keys(tree).forEach( function (value) {
     result.push(value + '@' + tree[value]['version'] );
   } )).sort();
+  */
 
   //console.log(result);
+
+  console.log("STEP INTO");
+  console.log(tree);
+  
+  if ( typeof tree === 'undefined' ){
+    console.log("UNDEFINED");
+    return [];
+  }
+
+  if (typeof tree.dependencies != 'undefined' ){
+    return getDependencies(tree['dependencies']);
+  }
+
+  let result  = []
+  return result.concat( Object.keys(tree).forEach( function (value) {
+    result.push(value + '@' + tree[value]['version'] );
+  } )).sort();
+
 
 
 }
