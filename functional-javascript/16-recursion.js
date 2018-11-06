@@ -31,6 +31,10 @@ module.exports = function getDependencies(tree) {
 
   let result  = []
   return result.concat( Object.keys(tree).forEach( function (value) {
+    console.log("----",value + '@' + tree[value]['version']);
+    if(typeof tree[value]['version'] === 'undefined'){
+      return;  
+    }
     result.push(value + '@' + tree[value]['version'] );
   } )).sort();
 
