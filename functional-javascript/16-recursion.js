@@ -1,27 +1,24 @@
+function getDependencies(mod, result) {
+  result = result || []
+  var dependencies = mod.dependencies || []
+  Object.keys(dependencies).forEach(function(dep) {
+    var key = dep + '@' + mod.dependencies[dep].version
+    if (result.indexOf(key) === -1) result.push(key)
+    getDependencies(mod.dependencies[dep], result)
+  })
+  return result.sort()
+}
+
+module.exports = getDependencies
+
+/*
 module.exports = function getDependencies(tree) {
-  // SOLUTION GOES HERE
-  // Note: Feel free to add additional arguments
-  // to this function for use with recursive calls.
-  // Or not! There are many ways to recurse.
-  //console.log(tree);
-
-  /*
-  if (typeof tree['dependencies'] != 'undefined' ){
-    return getDependencies(tree['dependencies']);
-  }
-  let result  = []
-  return result.concat( Object.keys(tree).forEach( function (value) {
-    result.push(value + '@' + tree[value]['version'] );
-  } )).sort();
-  */
-
-  //console.log(result);
 
   console.log("STEP INTO");
   console.log(tree);
   
   if ( typeof tree === 'undefined' ){
-    console.log("UNDEFINED");
+    // console.log("UNDEFINED");
     return [];
   }
 
@@ -30,14 +27,32 @@ module.exports = function getDependencies(tree) {
   }
 
   let result  = []
-  return result.concat( Object.keys(tree).forEach( function (value) {
-    console.log("----",value + '@' + tree[value]['version']);
+  result.concat( Object.keys(tree).forEach( function (value) {
+    // console.log("----",value + '@' + tree[value]['version']);
+    
     if(typeof tree[value]['version'] === 'undefined'){
       return;  
     }
     result.push(value + '@' + tree[value]['version'] );
-  } )).sort();
+            
+    console.log("PROGRESS A result value:", value, result);
+
+    if (typeof tree[value]['dependencies'] != 'undefined' ){
+      console.log("CONCAT", result , " WITH ",getDependencies( tree[value]['dependencies'] ));
+      let innerResults = getDependencies( tree[value]['dependencies'] )
+      result.concat( innerResults );
+    }
+
+    console.log("PROGRESS B result ", result);
 
 
+  } ));
+
+  result.sort();
+
+  console.log( result );
+
+  return result;
 
 }
+*/
