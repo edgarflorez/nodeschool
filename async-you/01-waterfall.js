@@ -1,40 +1,76 @@
-var http = require('http')  
-       , async = require('async');  
-      //  console.log(process.argv[2]);
-      // /Users/edgarflorez/.nvm/versions/node/v6.2.0/lib/node_modules/async-you/exercises/waterfall/url.txt
-       
+const http = require("http");
+const async = require("async");
+const fs = require("fs");
 
-     async.waterfall([  
-       function(cb){  
-         var body = '';  
-         // response is JSON encoded object like the following {port: 3132}  
-         http.get('http://localhost:9345', function(res){  
-           res.on('data', function(chunk){  
-             body += chunk.toString();  
-           });  
-           res.on('end', function(){  
-            console.log("body");
-             cb(null, body);  
-           });  
-         }).on('error', function(err) {  
-           cb(err);  
-         });  
-       },  
-       
-       function(body, cb){  
-         var body = '';  
-         http.get(cb, function(res){  
-           res.on('data', function(chunk){  
-             body += chunk.toString();  
-           });  
-           res.on('end', function(){  
-             cb(null, body);  
-           });  
-         }).on('error', function(err) {  
-           cb(err);  
-         });  
-       }  
-     ], function(err, result){  
-       if (err) return console.error(err);  
-       console.log(result);  
-     });  
+const filePath = process.argv[2];
+
+async.waterfall(
+  [
+    function(done) {
+      fs.readFile(filePath, "utf8", (err, data) => {
+        if (err) return console.log(err);
+        done(null, data);
+      });
+    },
+
+    function(data, done) {
+      let body = "";
+      http.get(data, function(response) {
+        response.setEncoding("utf8");
+
+        response.on("data", function(data) {
+          body += data.toString();
+        });
+
+        response.on("end", function() {
+          done(null, body);
+        });
+      });
+    }
+  ],
+  function done(err, result) {
+    if (err) return console.log(err);
+    console.log(result);
+  }
+);
+
+/**
+ * Official solution
+ */
+/*
+var fs = require("fs"),
+  http = require("http"),
+  async = require("async");
+
+async.waterfall(
+  [
+    function(done) {
+      fs.readFile(process.argv[2], function(err, data) {
+        if (err) return done(err);
+        done(null, data);
+      });
+    },
+
+    function(data, done) {
+      var body = "";
+      http
+        .get(data.toString().trimRight(), function(res) {
+          res.on("data", function(chunk) {
+            body += chunk.toString();
+          });
+
+          res.on("end", function(chunk) {
+            done(null, body);
+          });
+        })
+        .on("error", function(e) {
+          done(e);
+        });
+    }
+  ],
+  function done(err, result) {
+    if (err) return console.error(err);
+    console.log(result);
+  }
+);
+*/
