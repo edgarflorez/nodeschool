@@ -6,11 +6,13 @@ module.exports = function(counter) {
   let input = through(write, end);
 
   function write(buf, _, next) {
+    console.log(buf);
     counts[buf.country] = (counts[buf.country] || 0) + 1;
     next();
   }
 
   function end(done) {
+    console.log(counts);
     counter.setCounts(counts);
     done();
   }
