@@ -4,59 +4,30 @@ const through = require("through2").obj;
 const zlib = require("zlib");
 
 module.exports = function() {
-  let input = through(write, end);
-  /*
-  let books = {};
-  let input = through(write, end);
-  let currentGenre;
-  let booksByGenre;
-  let counter = 0;
-  */
-
-  let books = {};
-  let currentGenre;
+  const input = through(write, end);
+  let current;
 
   function write(buf, _, next) {
-    // this.push(buf.toString().toUpperCase());
-    buf = JSON.parse(buf);
-    if (buf.type == "genre") {
-      currentGenre = buf.name;
-      books[currentGenre] = [];
-    } else {
-      books[currentGenre] = books[currentGenre].concat([buf.name]);
+    if (buf.length === 0) return next();
+    const row = JSON.parse(buf);
+
+    if (row.type === "genre") {
+      if (current) {
+        this.push(JSON.stringify(current) + "\n");
+      }
+      current = { name: row.name, books: [] };
+    } else if (row.type === "book") {
+      current.books.push(row.name);
     }
-    // this.push(JSON.stringify(books));
-    console.log("------------");
     next();
-    /*
-    buf = JSON.parse(buf);
-    console.log(buf);
-    if (buf.type == "genre") {
-      console.log("A");
-      currentGenre = buf.name;
-      books[currentGenre] = [];
-    } else {
-      console.log("B");
-      books[currentGenre] = books[currentGenre].concat([buf.name]);
-    }
-    // counts[buf.country] = (counts[buf.country] || 0) + 1;
-    next();
-    */
   }
 
   function end(done) {
-    // this.push(books);
-    console.log("***********************");
-    // console.log(this);
-    return done();
-  }
-  function flush(callback) {
-    this.push(this.total);
-    return callback();
+    if (current) {
+      this.push(JSON.stringify(current) + "\n");
+    }
+    done();
   }
 
-  return combine(split(), input, process.stdout);
-  // read newline-separated json
-  // group books into genres,
-  // then gzip the output
+  return combine(split(), input, zlib.createGzip());
 };
