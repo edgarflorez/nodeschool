@@ -1,9 +1,22 @@
-var crypto = require("crypto");
+const crypto = require("crypto");
+const tar = require("tar");
+const zlib = require("zlib");
+const concat = require("concat-stream");
 
-const cipherName = process.argv[2];
-const cipherPassphrase = process.argv[3];
+const parserTarFiles = new tar.Parse();
+parserTarFiles.on("entry", function(e) {
+  if (e.type !== "File") return e.resume();
 
-const stream = crypto.createDecipher(cipherName, cipherPassphrase);
+  var h = crypto.createHash("md5", { encoding: "hex" });
+  e.pipe(h).pipe(
+    concat(function(hash) {
+      console.log(hash + " " + e.path);
+    })
+  );
+});
 
-// console.log(cipherName, cipherPassphrase);
-process.stdin(stream).pipe(process.stdout);
+process.stdin
+  .pipe(crypto.createDecipher(process.argv[2], process.argv[3]))
+  .pipe(zlib.createGunzip())
+  // .pipe(process.stdout);
+  .pipe(parserTarFiles);
