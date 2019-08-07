@@ -1,1 +1,3 @@
-Hello!, this is a git test file
+Hello!, this is a git test file.
+
+New line
